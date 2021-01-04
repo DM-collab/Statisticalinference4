@@ -1,0 +1,150 @@
+---
+title: 'Part 1: Simulation Exercise'
+author: "David Augusto"
+date: "25/10/2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+#### Part 1: Simulation Exercise Instructions
+ 
+In this project you will investigate the *exponential distribution* in R and compare it with the Central Limit Theorem.
+
+
+The exponential distribution can be simulated in R with **rexp(n, lambda)** where:
+
+1. **lambda** is the rate parameter. 
+
+2. The *mean* of exponential distribution is **1/lambda**. 
+
+3. the *standard deviation* is also **1/lambda**. 
+
+Set **lambda = 0.2** for all of the simulations.
+
+
+
+
+*You will investigate the distribution of averages of 40 exponentials. *
+
+
+Illustrate via simulation and associated explanatory text the properties of the distribution of the mean of 40 exponentials. 
+
+You should:
+
+1. Show the **sample mean** and *compare it* to the **theoretical mean** of the distribution.
+
+2. Show the **variance** and *compare it* to the **theoretical variance** of the distribution.
+
+3. **Show that the distribution is approximately normal.**
+
+
+ ======================================================================================================================
+
+#### Exponential distribution:
+
+
+The exponential distribution is defined by its cumulative distribution function
+
+$$ F(x) = 1-e^{-\lambda x} $$
+
+The R function `rexp` generates random variables with an exponential distribution.
+
+
+
+
+
+
+>Question 1 : Show the sample mean and compare it to the theoretical mean distribution
+
+```{r}
+
+set.seed(777)
+n <- 40
+Lambda <- 0.2
+Simulations <- 1000
+
+```
+
+
+>Theoretical values:
+
+
+1. Theoretical Mean is equal to: `r 1/Lambda`
+
+2. Theoretical Standard Deviation is equal to: `r 1/Lambda* (1/sqrt(n))`
+
+3. Theoretical Variance is equal to: `r (1/Lambda* (1/sqrt(n)))^2`
+
+```{r}
+
+SampleMean <- 0
+
+#For,this will create our n means from the rexp funtion.
+
+for(i in 1:Simulations) {
+  SampleMean <- c(SampleMean, mean(rexp(n, Lambda)))
+  
+}
+
+mean(SampleMean)
+```
+
+The sample mean is very close to the theoretical mean distribution.
+The difference is = `r 5-4.969789`
+
+
+>Question 2: Show the sample variance and compare it to the thoretical variance of the distribtution.
+
+```{r}
+Variance <- var(SampleMean)
+
+Variance
+```
+
+
+The sample variance is very close to the theoretical variance.
+
+The difference is = `r .625-0.6384832`
+
+
+
+
+**Show that the distribution is aproximately normal**
+
+
+This can be shown with 2 graph tools:
+
+1. Histogram of the n means
+
+2. The normal probability plot 
+
+======================================================================================================================
+
+First we examine the Histogram, 
+
+```{r}
+
+hist(SampleMean, breaks = n, prob = T, col = "green", xlab = "Means")
+x <- seq(min(SampleMean), max(SampleMean), length = 100)
+lines(x, dnorm(x, mean = 1/Lambda, sd = (1/Lambda/sqrt(n))), pch = 25, col = "Red")
+
+
+```
+
+We conclude that the histogram appears to be bell shaped, and the mean is very close to the theoretical mean.
+
+
+Then, for our Normal probability plot:
+
+
+```{r}
+qqnorm(SampleMean)
+qqline(SampleMean, col = "Red")
+```
+
+The data should form an approximate straight line, in this case it appears almost linear, we can assume the data set **is approximately normally distributed**
+
+
